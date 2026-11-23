@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  macos:
+    runs-on: macos-15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Select Swift 6.2 or newer
+        shell: bash
+        run: |
+          set -euo pipefail
+          for developer in /Applications/Xcode*.app/Contents/Developer; do
+            if DEVELOPER_DIR="$developer" swift package dump-package >/dev/null 2>&1; then
+              echo "DEVELOPER_DIR=$developer" >> "$GITHUB_ENV"
+              exit 0
+            fi
+          done
+          echo 'A compatible Xcode installation is required.' >&2
+          exit 1
+      - run: make test
+      - run: make app
+      - run: codesign --verify --deep --strict dist/Paopei.app

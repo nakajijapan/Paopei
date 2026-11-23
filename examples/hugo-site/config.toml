@@ -1,0 +1,4 @@
+baseURL = "https://example.org/"
+defaultContentLanguage = "ja"
+title = "サンプルブログ"
+disableKinds = ["taxonomy", "term", "rss", "sitemap"]

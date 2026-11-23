@@ -1,0 +1,35 @@
+.build/
+.swiftpm/
+dist/
+.DS_Store
+Package.resolved
+
+# Local credentials and application caches
+.env
+.env.*
+!.env.example
+*.p12
+*.mobileprovision
+*.keychain-db
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Local settings, credentials, editor state and generated files
+.nkjblogposter.json
+.envrc
+*.pem
+*.p8
+*.pfx
+*.key
+*.keychain
+*.db
+*.db-shm
+*.db-wal
+*.log
+*.xcuserstate
+xcuserdata/
+project.xcworkspace/
+__pycache__/
+*.py[cod]
+oss-export/

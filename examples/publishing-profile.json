@@ -1,0 +1,5 @@
+{
+  "sourceRepository": "example/blog-source",
+  "outputRepository": "example/blog-output",
+  "outputBranch": "main"
+}
