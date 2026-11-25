@@ -7,9 +7,11 @@ struct PublishingProfile: Decodable, Equatable {
     let outputBranch: String
 
     static func load(from root: URL) throws -> Self {
-        let file = root.appendingPathComponent(".nkjblogposter.json")
+        let current = root.appendingPathComponent(".paopei.json")
+        let legacy = root.appendingPathComponent(".nkjblogposter.json")
+        let file = FileManager.default.fileExists(atPath: current.path) ? current : legacy
         guard FileManager.default.fileExists(atPath: file.path) else {
-            throw AppError.invalidRepository("投稿するには、Hugoソースに .nkjblogposter.json を作成して投稿先を設定してください。")
+            throw AppError.invalidRepository("投稿するには、Hugoソースに .paopei.json を作成して投稿先を設定してください。")
         }
         do {
             let profile = try JSONDecoder().decode(Self.self, from: Data(contentsOf: file))
@@ -23,7 +25,7 @@ struct PublishingProfile: Decodable, Equatable {
             return profile
         } catch {
             // A malformed file must never fall back to somebody else's publishing target.
-            throw AppError.invalidRepository(".nkjblogposter.json を読み込めません。\n\(error.localizedDescription)")
+            throw AppError.invalidRepository("\(file.lastPathComponent) を読み込めません。\n\(error.localizedDescription)")
         }
     }
 

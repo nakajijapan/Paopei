@@ -1,10 +1,12 @@
-.PHONY: run test app release clean
+.PHONY: run test build app release clean
 
 run:
 	swift run NKJBlogPoster
 
 test:
 	swift test
+
+build: app
 
 app:
 	./scripts/build-app.sh

@@ -22,7 +22,7 @@ open dist/Paopei.app
 
 ## ブログの設定と投稿
 
-現行版は`config.toml`、`content/posts`、公開先の`public`サブモジュールを持つHugoサイトに対応します。投稿前に`examples/publishing-profile.json`をHugoソース直下の`.nkjblogposter.json`へコピーし、利用者自身のリポジトリとブランチを設定してください。このファイルにAPIキーは書かないでください。
+現行版は`config.toml`、`content/posts`、公開先の`public`サブモジュールを持つHugoサイトに対応します。投稿前に`examples/publishing-profile.json`をHugoソース直下の`.paopei.json`へコピーし、利用者自身のリポジトリとブランチを設定してください。このファイルにAPIキーは書かないでください。
 
 設定画面でHugoソースのフォルダを選択してください。投稿設定ファイルがない場合、投稿は実行されません。投稿前に設定ファイルと実際のGit remoteを確認してください。投稿はブログの生成、commit、pushを実行します。
 

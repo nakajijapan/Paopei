@@ -6,7 +6,7 @@ final class PublishingProfileTests: XCTestCase {
     func testMissingProfileStopsPublishing() throws {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         XCTAssertThrowsError(try PublishingProfile.load(from: root)) { error in
-            XCTAssertTrue(error.localizedDescription.contains(".nkjblogposter.json"))
+            XCTAssertTrue(error.localizedDescription.contains(".paopei.json"))
         }
     }
 
@@ -16,6 +16,27 @@ final class PublishingProfileTests: XCTestCase {
             XCTAssertEqual(profile.sourceRepository, "example/blog")
             XCTAssertEqual(profile.outputRepository, "example/site")
             XCTAssertEqual(profile.outputBranch, "main")
+        }
+    }
+
+    func testLegacyProfileStillLoadsWhenNewProfileIsAbsent() throws {
+        try withProfile(#"{"sourceRepository":"example/blog","outputRepository":"example/site","outputBranch":"main"}"#) { root in
+            try FileManager.default.moveItem(at: root.appendingPathComponent(".paopei.json"), to: root.appendingPathComponent(".nkjblogposter.json"))
+            XCTAssertEqual(try PublishingProfile.load(from: root).sourceRepository, "example/blog")
+        }
+    }
+
+    func testInvalidNewProfileDoesNotFallBackToLegacyProfile() throws {
+        try withProfile("{") { root in
+            try #"{"sourceRepository":"example/blog","outputRepository":"example/site","outputBranch":"main"}"#.write(to: root.appendingPathComponent(".nkjblogposter.json"), atomically: true, encoding: .utf8)
+            XCTAssertThrowsError(try PublishingProfile.load(from: root))
+        }
+    }
+
+    func testNewProfileTakesPrecedenceOverLegacyProfile() throws {
+        try withProfile(#"{"sourceRepository":"example/new","outputRepository":"example/site","outputBranch":"main"}"#) { root in
+            try #"{"sourceRepository":"example/old","outputRepository":"example/site","outputBranch":"master"}"#.write(to: root.appendingPathComponent(".nkjblogposter.json"), atomically: true, encoding: .utf8)
+            XCTAssertEqual(try PublishingProfile.load(from: root).sourceRepository, "example/new")
         }
     }
 
@@ -54,7 +75,7 @@ final class PublishingProfileTests: XCTestCase {
         let root = FileManager.default.temporaryDirectory.appendingPathComponent(UUID().uuidString)
         try FileManager.default.createDirectory(at: root, withIntermediateDirectories: true)
         defer { try? FileManager.default.removeItem(at: root) }
-        try json.write(to: root.appendingPathComponent(".nkjblogposter.json"), atomically: true, encoding: .utf8)
+        try json.write(to: root.appendingPathComponent(".paopei.json"), atomically: true, encoding: .utf8)
         try body(root)
     }
 }

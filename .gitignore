@@ -17,6 +17,7 @@ Package.resolved
 
 # Local settings, credentials, editor state and generated files
 .nkjblogposter.json
+.paopei.json
 .envrc
 *.pem
 *.p8
