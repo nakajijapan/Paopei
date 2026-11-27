@@ -1793,7 +1793,7 @@ struct RepositorySettingsView: View {
                     .background(.quaternary, in: RoundedRectangle(cornerRadius: 6, style: .continuous))
             }
 
-            Text("投稿には .nkjblogposter.json の設定が必要です。公開先はHugoソース内のpublicサブモジュールとし、両方のoriginを検証します。")
+            Text("投稿には .paopei.json の設定が必要です。公開先はHugoソース内のpublicサブモジュールとし、両方のoriginを検証します。")
                 .font(.caption)
                 .foregroundStyle(.secondary)
             Spacer()

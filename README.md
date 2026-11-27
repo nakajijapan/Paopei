@@ -22,7 +22,7 @@ To try the app without using your own blog, copy `examples/hugo-site` to another
 
 ## Blog setup and publishing
 
-The current version supports Hugo sites with `config.toml`, `content/posts`, and a `public` submodule for generated output. Before publishing, copy `examples/publishing-profile.json` to `.nkjblogposter.json` in the Hugo source root, then set your own repositories and branch. Do not put API keys in this file.
+The current version supports Hugo sites with `config.toml`, `content/posts`, and a `public` submodule for generated output. Before publishing, copy `examples/publishing-profile.json` to `.paopei.json` in the Hugo source root, then set your own repositories and branch. Do not put API keys in this file.
 
 Select your Hugo source folder in the app settings. Publishing is disabled when the publishing profile is missing. Before publishing, check the profile and the actual Git remotes. Publishing builds the blog, commits changes, and pushes them.
 
