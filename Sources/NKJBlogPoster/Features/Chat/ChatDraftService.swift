@@ -133,7 +133,7 @@ struct ChatDraftService: ChatDraftServing {
         _ request: ChatDraftRequest,
         onDelta: @escaping @MainActor @Sendable (ChatDraftStreamDelta) -> Void
     ) async throws -> ChatDraftResponse {
-        // 編集モードは更新案を検証してから表示する契約なので、一括応答を維持する。
+        // Edit mode uses a complete response so the proposed changes can be validated before display.
         guard request.mode == .consultation else {
             return try await generate(request)
         }
