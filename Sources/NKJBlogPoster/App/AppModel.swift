@@ -201,7 +201,7 @@ final class AppModel: ObservableObject {
         }
         if isDirty { try save() }
         cancelChatGeneration()
-        // 更新案は作成元の記事を開いている間だけ有効。会話は残し、記事切替前に更新案だけを破棄する。
+        // Discard the proposal when switching away from its source article. Keep the conversation history.
         if selectedPost?.url != post.url {
             chatProposal = nil
         }

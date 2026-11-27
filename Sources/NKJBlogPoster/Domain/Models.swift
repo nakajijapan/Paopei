@@ -107,7 +107,7 @@ struct ChatDraftResponse: Sendable, Equatable {
     }
 }
 
-/// 相談モードのSSEから受け取った、表示用の本文断片です。
+/// A fragment of displayed text received from the consultation mode's server-sent event stream.
 struct ChatDraftStreamDelta: Sendable, Equatable {
     let content: String
     let citations: [WebCitation]
@@ -142,7 +142,7 @@ struct ChatProposal: Sendable, Equatable {
     let markdown: String
 }
 
-/// 記事ごとの独立した会話。記事本文などの機密性を考慮し、アプリ起動中だけメモリに保持する。
+/// A conversation scoped to one article. It stays in memory until the app exits to protect draft content.
 struct ChatSession: Identifiable, Sendable, Equatable {
     let id: UUID
     var title: String

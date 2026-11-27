@@ -2,12 +2,31 @@ import SwiftUI
 
 @main
 struct NKJBlogPosterApp: App {
-    @StateObject private var model = AppModel(deferAPIKeyStatusRefresh: true)
+    @StateObject private var model: AppModel
+    #if !SWIFT_PACKAGE
+    @State private var updateManager: UpdateManager
+    @NSApplicationDelegateAdaptor(UpdateTerminationDelegate.self) private var updateTerminationDelegate
+    #endif
+
+    init() {
+        let model = AppModel(deferAPIKeyStatusRefresh: true)
+        _model = StateObject(wrappedValue: model)
+        #if !SWIFT_PACKAGE
+        _updateManager = State(initialValue: UpdateManager(model: model))
+        #endif
+    }
 
     var body: some Scene {
         WindowGroup("Paopei") {
             ContentView()
                 .environmentObject(model)
+                #if !SWIFT_PACKAGE
+                .environment(updateManager)
+                .task {
+                    updateTerminationDelegate.updateManager = updateManager
+                    updateManager.start()
+                }
+                #endif
                 .task {
                     // A protected Keychain read can block the main actor while it
                     // waits for system authentication. Load the article list
@@ -18,6 +37,13 @@ struct NKJBlogPosterApp: App {
         }
         .defaultSize(width: 1_600, height: 1_000)
         .commands {
+            #if !SWIFT_PACKAGE
+            CommandGroup(after: .appInfo) {
+                Button("アップデートを確認…") { updateManager.checkForUpdates() }
+                    .disabled(!updateManager.canCheckForUpdates)
+            }
+            #endif
+
             CommandGroup(replacing: .saveItem) {
                 Button("保存") {
                     do { try model.save() } catch { model.present(error) }

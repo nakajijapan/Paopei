@@ -32,6 +32,10 @@ Select your Hugo source folder in the app settings. Publishing is disabled when 
 
 After changes have been merged into `main`, run `./scripts/publish-release.sh 1.0.1` to create and push a tag. GitHub Actions runs tests, signs and notarizes the app, creates the installer, and publishes the release. Check the workflow status in GitHub Actions. Signing and notarization secrets must be configured in advance.
 
+Paopei checks GitHub Releases at launch and every six hours while it runs. An update card appears below the article list. Choose **再起動して更新** to save your current article and apply the update, or **あとで** to hide that version until the next launch. You can also check from **Paopei → アップデートを確認…**. Users of a version released before this feature must install the first update-enabled DMG manually.
+
+Before the first update-enabled release, run Sparkle’s `generate_keys --account paopei-release`. Export its base64 seed with `generate_keys --account paopei-release -x <private-key-file>` and set the GitHub Actions secret `SPARKLE_ED_PRIVATE_KEY` to the file’s contents. Keep the key in Keychain and retain a secure backup. Use the same key for subsequent releases because installed copies verify updates against its public key. The release workflow signs the notarized DMG and update feed with this key and publishes `appcast.xml` alongside the DMG.
+
 ## License
 
 MIT License. See [LICENSE](LICENSE) for details.
