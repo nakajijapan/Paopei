@@ -84,17 +84,39 @@ xcodebuild \
   SPARKLE_PUBLIC_ED_KEY="$SPARKLE_PUBLIC_ED_KEY" \
   ENABLE_HARDENED_RUNTIME=YES
 
+# Xcode signs the embedded framework but leaves the prebuilt Sparkle helpers ad hoc signed.
+sparkle_framework="$APP_PATH/Contents/Frameworks/Sparkle.framework/Versions/Current"
+for code in \
+  "$sparkle_framework/Autoupdate" \
+  "$sparkle_framework/Updater.app" \
+  "$sparkle_framework/XPCServices/Downloader.xpc" \
+  "$sparkle_framework/XPCServices/Installer.xpc" \
+  "$sparkle_framework" \
+  "$APP_PATH"; do
+  codesign --force --sign "$APPLE_SIGNING_IDENTITY" --timestamp --options runtime \
+    --preserve-metadata=identifier,entitlements "$code"
+done
+
 codesign --verify --deep --strict --verbose=2 "$APP_PATH"
 lipo "$APP_PATH/Contents/MacOS/NKJBlogPoster" -verify_arch arm64
 lipo "$APP_PATH/Contents/MacOS/NKJBlogPoster" -verify_arch x86_64
 "$ROOT_DIR/scripts/create-dmg.sh" "$APP_PATH" "$DMG_PATH"
 codesign --force --sign "$APPLE_SIGNING_IDENTITY" --timestamp "$DMG_PATH"
 codesign --verify --verbose=2 "$DMG_PATH"
-xcrun notarytool submit "$DMG_PATH" \
+notary_result="$(xcrun notarytool submit "$DMG_PATH" \
   --key "$KEY_PATH" \
   --key-id "$APPLE_API_KEY_ID" \
   --issuer "$APPLE_API_ISSUER_ID" \
-  --wait
+  --wait --output-format json)"
+print -r -- "$notary_result"
+if [[ "$(print -r -- "$notary_result" | plutil -extract status raw -o - -)" != "Accepted" ]]; then
+  submission_id="$(print -r -- "$notary_result" | plutil -extract id raw -o - -)"
+  xcrun notarytool log "$submission_id" \
+    --key "$KEY_PATH" \
+    --key-id "$APPLE_API_KEY_ID" \
+    --issuer "$APPLE_API_ISSUER_ID"
+  exit 1
+fi
 xcrun stapler staple "$DMG_PATH"
 xcrun stapler validate "$DMG_PATH"
 spctl -a -vvv -t open --context context:primary-signature "$DMG_PATH"
