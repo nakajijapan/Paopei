@@ -173,6 +173,9 @@ struct ContentView: View {
                         .accessibilityLabel("記事一覧を読み込み中")
                 }
             }
+            #if !SWIFT_PACKAGE
+            UpdateNoticeFooter()
+            #endif
         }
         .background(Color(nsColor: .windowBackgroundColor))
         .navigationTitle("記事")

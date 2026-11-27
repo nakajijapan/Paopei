@@ -32,6 +32,12 @@ open dist/Paopei.app
 
 `main` に修正を反映した後、`./scripts/publish-release.sh 1.0.1` のように実行すると、タグの作成・送信を行います。GitHub Actionsが署名、公証、インストーラーの作成と公開を実行します。ワークフローの実行状況はGitHub Actionsで確認できます。署名・公証に必要なシークレットの事前設定が必要です。
 
+Paopei は起動時と起動中の6時間ごとに GitHub Releases を確認します。新版があると記事一覧の下にカードが表示されます。「再起動して更新」を押すと、編集中の記事を保存して更新します。「あとで」を押した版は次の起動まで非表示になります。メニューの **Paopei → アップデートを確認…** からも確認できます。この機能が入る前の版をお使いの場合は、対応版の DMG を一度手動でインストールしてください。
+
+開発時は [更新カードの確認手順](docs/test-updates.md) のローカル配布を使って動作を確認できます。
+
+初回の対応版を配布する前に、Sparkle の `generate_keys --account paopei-release` で署名鍵を作成します。`generate_keys --account paopei-release -x <private-key-file>` で書き出したファイルの内容を GitHub Actions のシークレット `SPARKLE_ED_PRIVATE_KEY` に設定してください。鍵は Keychain と安全なバックアップ先に保管してください。インストール済みのアプリは対応する公開鍵で検証するため、次回以降も同じ鍵を使います。配布ワークフローは公証済みの DMG と更新フィードに署名し、DMG と一緒に `appcast.xml` を公開します。
+
 ## ライセンス
 
 MITライセンスです。詳細は `LICENSE` を参照してください。

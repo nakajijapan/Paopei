@@ -65,6 +65,7 @@ jobs:
           APPLE_API_PRIVATE_KEY_BASE64: ${{ secrets.APPLE_API_PRIVATE_KEY_BASE64 }}
           APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
           APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
+          SPARKLE_ED_PRIVATE_KEY: ${{ secrets.SPARKLE_ED_PRIVATE_KEY }}
           RELEASE_OUTPUT_DIR: ${{ github.workspace }}/dist/release
           RELEASE_TAG: ${{ inputs.tag || github.ref_name }}
         run: ./scripts/release-macos.sh "$RELEASE_TAG"
@@ -78,6 +79,7 @@ jobs:
           gh release create "$RELEASE_TAG" \
             dist/release/Paopei-*.dmg \
             dist/release/Paopei-*.dmg.sha256 \
+            dist/release/appcast.xml \
             --verify-tag \
             --title "Paopei $RELEASE_TAG" \
             --generate-notes
